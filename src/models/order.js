@@ -17,6 +17,7 @@ const OrderSchema = new mongoose.Schema({
 	},
 	delivery_address: {
 		type: {
+			full_address: String,
 			lat: Number,
 			long: Number
 		},
