@@ -14,8 +14,20 @@ export default ({ config, db }) => {
 	// Order Region
 
 	api.post('/order/createOrder', (req, res) => {
+		const {
+			client_id,
+			driver_id,
+			description,
+			store_name,
+			delivery_address
+		} = req.body;
+
 		const newOrder = new Order({
-			...req.body
+			client_id,
+			driver_id,
+			description,
+			store_name,
+			delivery_address
 		});
 		return newOrder.save().then(() => res.json(newOrder));
 	});

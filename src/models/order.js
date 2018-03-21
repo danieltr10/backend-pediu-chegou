@@ -9,19 +9,19 @@ const OrderSchema = new mongoose.Schema({
 	driver_id: {
 		type: mongoose.Schema.Types.ObjectId
 	},
+	description: {
+		type: String
+	},
+	store_name: {
+		type: String
+	},
 	delivery_address: {
 		type: {
 			lat: Number,
 			long: Number
 		},
 		required: true
-	},
-	path_addresses: [
-		{
-			lat: Number,
-			long: Number
-		}
-	]
+	}
 });
 
 export default mongoose.model('Order', OrderSchema);
