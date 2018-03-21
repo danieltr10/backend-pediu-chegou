@@ -28,10 +28,12 @@
   "author": "Jason Miller <jason@developit.ca>",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "body-parser": "^1.13.3",
     "compression": "^1.5.2",
     "cors": "^2.7.1",
     "express": "^4.13.3",
+    "mongoose": "^5.0.11",
     "morgan": "^1.8.0",
     "resource-router-middleware": "^0.6.0"
   },
