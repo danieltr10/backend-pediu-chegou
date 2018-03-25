@@ -41,5 +41,21 @@ export default ({ config, db }) => {
 		return newOrder.save().then(() => res.json(newOrder));
 	});
 
+	// Payment
+
+	api.post('/order/createPayment', (req, res) => {
+		const { client_id, number, cvc, name, expiry, type } = req.body;
+
+		const newPayment = new Payment({
+			client_id,
+			number,
+			cvc,
+			name,
+			expiry,
+			type
+		});
+		return newPayment.save().then(() => res.json(newPayment));
+	});
+
 	return api;
 };
