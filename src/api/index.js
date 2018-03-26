@@ -3,6 +3,7 @@ import { Router } from 'express';
 
 import Order from '../models/order';
 import User from '../models/user';
+import Payment from '../models/payment';
 
 export default ({ config, db }) => {
 	let api = Router();
@@ -43,7 +44,7 @@ export default ({ config, db }) => {
 
 	// Payment
 
-	api.post('/order/createPayment', (req, res) => {
+	api.post('/payment/createPayment', (req, res) => {
 		const { client_id, number, cvc, name, expiry, type } = req.body;
 
 		const newPayment = new Payment({
