@@ -15,6 +15,14 @@ const OrderSchema = new mongoose.Schema({
 	store_name: {
 		type: String
 	},
+	store_address: {
+		type: {
+			full_address: String,
+			lat: Number,
+			long: Number
+		},
+		required: true
+	},
 	delivery_address: {
 		type: {
 			full_address: String,
