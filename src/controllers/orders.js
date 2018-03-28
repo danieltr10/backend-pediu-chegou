@@ -2,6 +2,7 @@ import Order from '../models/order';
 import User from '../models/user';
 import Driver from '../models/driver';
 import util from '../lib/util';
+import Expo from 'expo-server-sdk';
 
 export const createOrder = (req, res) => {
 	const {
@@ -66,5 +67,37 @@ const getNearestDriverForOrder = (order, drivers) => {
 };
 
 const notifyNewOrderToDriver = (driver, order) => {
-	// TODO: send notification to driver
+	const pushToken = driver.push_token;
+	if (pushToken && Expo.isExpoPushToken(pushToken)) {
+		let expo = new Expo();
+		let messages = [
+			{
+				to: pushToken,
+				sound: 'default',
+				body: 'Temos uma nova entrega pra você! 🛵 📦',
+				data: { order }
+			}
+		];
+
+		// The Expo push notification service accepts batches of notifications so
+		// that you don't need to send 1000 requests to send 1000 notifications. We
+		// recommend you batch your notifications to reduce the number of requests
+		// and to compress them (notifications with similar content will get
+		// compressed).
+		let chunks = expo.chunkPushNotifications(messages);
+
+		(async () => {
+			// Send the chunks to the Expo push notification service. There are
+			// different strategies you could use. A simple one is to send one chunk at a
+			// time, which nicely spreads the load out over time:
+			for (let chunk of chunks) {
+				try {
+					let receipts = await expo.sendPushNotificationsAsync(chunk);
+					console.log(receipts);
+				} catch (error) {
+					console.error(error);
+				}
+			}
+		})();
+	}
 };
