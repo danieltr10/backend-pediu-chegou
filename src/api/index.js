@@ -32,15 +32,44 @@ export default ({ config, db }) => {
 
 	// Create User
 	api.post('/user/createUser', (req, res) => {
-		const { name, email, cpf, password_hash } = req.body;
+		const {
+			name,
+			email,
+			cpf,
+			lastName,
+			ddd,
+			phone,
+			push_token,
+			password_hash
+		} = req.body;
 
 		const newUser = new User({
 			name,
 			email,
+			lastName,
+			ddd,
+			phone,
+			push_token,
 			cpf,
 			password_hash
 		});
 		return newUser.save().then(() => res.json(newUser));
+	});
+
+	//Update User By Id
+	api.put('/user/:id', (req, res) => {
+		var id = req.params.id;
+		return User.findOne({ _id: id }).then(user => {
+			user.name = req.body.name;
+			user.email = req.body.email;
+			user.lastName = req.body.lastName;
+			user.ddd = req.body.ddd;
+			user.phone = req.body.phone;
+			user.push_token = req.body.push_token;
+			user.cpf = req.body.cpf;
+			user.password_hash = req.body.password_hash;
+			return user.save().then(user => res.json(user));
+		});
 	});
 
 	// Get User By Id
@@ -52,6 +81,39 @@ export default ({ config, db }) => {
 	// Get All User
 	api.get('/user/', (req, res) => {
 		return User.find({}).then(user => res.json(user));
+	});
+
+	// Driver
+
+	// Create driver
+	api.post('/driver/createDriver', (req, res) => {
+		const { name, lastName, ddd, phone, email, cpf, company, password_hash, status, current_location, push_token} = req.body;
+
+		const newDriver = new Driver({
+			name,
+			lastName,
+			ddd,
+			phone,
+			email,
+			cpf,
+			company,
+			password_hash,
+			status,
+			current_location,
+			push_token
+		});
+		return newDriver.save().then(() => res.json(newDriver));
+	});
+
+	// Get Driver By Id
+	api.get('/driver/:id', (req, res) => {
+		var id = req.params.id;
+		return Driver.findOne({ _id: id }).then(driver => res.json(user));
+	});
+
+	// Get All Driver
+	api.get('/driver/', (req, res) => {
+		return Driver.find({}).then(driver => res.json(user));
 	});
 
 	// Payment
