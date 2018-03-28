@@ -6,7 +6,7 @@ import User from '../models/user';
 import Payment from '../models/payment';
 import Driver from '../models/driver';
 
-import ordersController from '../controllers/orders';
+import { createOrder } from '../controllers/orders';
 
 export default ({ config, db }) => {
 	let api = Router();
@@ -26,7 +26,7 @@ export default ({ config, db }) => {
 
 	// Order Region
 
-	api.post('/order/createOrder', (req, res) => ordersController.createOrder);
+	api.post('/order/createOrder', (req, res) => createOrder(req, res));
 
 	// User
 
