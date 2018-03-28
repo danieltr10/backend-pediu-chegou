@@ -74,6 +74,7 @@ export default ({ config, db }) => {
 	api.post('/payment/createPayment', (req, res) => {
 		const { client_id, number, cvc, name, expiry, type } = req.body;
 
+		console.log('teste');
 		const newPayment = new Payment({
 			client_id,
 			number,
@@ -82,7 +83,10 @@ export default ({ config, db }) => {
 			expiry,
 			type
 		});
-		return newPayment.save().then(() => res.json(newPayment));
+		return newPayment
+			.save()
+			.then(() => res.json(newPayment))
+			.catch(err => console.log(err));
 	});
 
 	return api;
