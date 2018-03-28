@@ -20,6 +20,7 @@ export const createOrder = (req, res) => {
 		delivery_address
 	});
 
+	console.log('teste');
 	return newOrder.save().then(() => {
 		return findDriverForOrder(newOrder).then(nearestDriver => {
 			if (!nearestDriver) {
