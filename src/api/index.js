@@ -56,6 +56,22 @@ export default ({ config, db }) => {
 		return newUser.save().then(() => res.json(newUser));
 	});
 
+	//Update User By Id
+	api.put('/user/:id', (req, res) => {
+		var id = req.params.id;
+		return User.findOne({ _id: id }).then(user => {
+			user.name = req.body.name;
+			user.email = req.body.email;
+			user.lastName = req.body.lastName;
+			user.ddd = req.body.ddd;
+			user.phone = req.body.phone;
+			user.push_token = req.body.push_token;
+			user.cpf = req.body.cpf;
+			user.password_hash = req.body.password_hash;
+			return user.save().then(user => res.json(user));
+		});
+	});
+
 	// Get User By Id
 	api.get('/user/:id', (req, res) => {
 		var id = req.params.id;
