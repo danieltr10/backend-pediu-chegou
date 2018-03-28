@@ -30,6 +30,11 @@ const OrderSchema = new mongoose.Schema({
 			long: Number
 		},
 		required: true
+	},
+	status: {
+		type: String,
+		enum: ['waiting', 'in_transit', 'delivered'],
+		default: false
 	}
 });
 

@@ -4,6 +4,8 @@ import { Router } from 'express';
 import Order from '../models/order';
 import User from '../models/user';
 
+import ordersController from '../controllers/orders';
+
 export default ({ config, db }) => {
 	let api = Router();
 
@@ -22,24 +24,7 @@ export default ({ config, db }) => {
 
 	// Order Region
 
-	api.post('/order/createOrder', (req, res) => {
-		const {
-			client_id,
-			driver_id,
-			description,
-			store_name,
-			delivery_address
-		} = req.body;
-
-		const newOrder = new Order({
-			client_id,
-			driver_id,
-			description,
-			store_name,
-			delivery_address
-		});
-		return newOrder.save().then(() => res.json(newOrder));
-	});
+	api.post('/order/createOrder', (req, res) => ordersController.createOrder);
 
 	return api;
 };
