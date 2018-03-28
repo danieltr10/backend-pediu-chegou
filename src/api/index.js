@@ -4,6 +4,7 @@ import { Router } from 'express';
 import Order from '../models/order';
 import User from '../models/user';
 import Payment from '../models/payment';
+import Driver from '../models/driver';
 
 import ordersController from '../controllers/orders';
 
