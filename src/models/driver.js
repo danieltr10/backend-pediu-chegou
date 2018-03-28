@@ -19,12 +19,12 @@ const DriverSchema = new mongoose.Schema({
 	},
 	email: {
 		type: String,
-		required: true
+		required: true,
 		unique: true
 	},
 	cpf: {
 		type: String,
-		required: true
+		required: true,
 		unique: true
 	},
 	company: {
