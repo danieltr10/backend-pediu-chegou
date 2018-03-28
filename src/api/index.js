@@ -32,11 +32,24 @@ export default ({ config, db }) => {
 
 	// Create User
 	api.post('/user/createUser', (req, res) => {
-		const { name, email, cpf, password_hash } = req.body;
+		const {
+			name,
+			email,
+			cpf,
+			lastName,
+			ddd,
+			phone,
+			push_token,
+			password_hash
+		} = req.body;
 
 		const newUser = new User({
 			name,
 			email,
+			lastName,
+			ddd,
+			phone,
+			push_token,
 			cpf,
 			password_hash
 		});
