@@ -35,7 +35,7 @@ var mongoDB =
 	'mongodb://pediu-backend:senhadobackend@ds121189.mlab.com:21189/pediu-chegou';
 mongoose.connect(mongoDB);
 // Get Mongoose to use the global promise library
-mongoose.Promise = global.Promise;
+mongoose.Promise = Promise;
 //Get the default connection
 var db = mongoose.connection;
 

@@ -9,7 +9,8 @@ export const createOrder = (req, res) => {
 		driver_id,
 		description,
 		store_name,
-		delivery_address
+		delivery_address,
+		store_address
 	} = req.body;
 
 	const newOrder = new Order({
@@ -17,34 +18,38 @@ export const createOrder = (req, res) => {
 		driver_id,
 		description,
 		store_name,
-		delivery_address
+		delivery_address,
+		store_address
 	});
 
-	return newOrder.save().then(() => {
-		return findDriverForOrder(newOrder).then(nearestDriver => {
-			if (!nearestDriver) {
-				res.json({
-					error: 'Não foi possível localizar um motorista no momento.'
-				});
-			} else {
-				notifyNewOrderToDriver(nearestDriver, newOrder);
-				return res.json(newOrder);
-			}
-		});
-	});
+	return newOrder
+		.save()
+		.then(() => {
+			return findDriverForOrder(newOrder).then(nearestDriver => {
+				if (!nearestDriver) {
+					res.json({
+						error: 'Não foi possível localizar um motorista no momento.'
+					});
+				} else {
+					notifyNewOrderToDriver(nearestDriver, newOrder);
+					return res.json(newOrder);
+				}
+			});
+		})
+		.catch(err => console.log(err));
 };
 
 // Const aux methods
 
 const findDriverForOrder = order => {
 	return Driver.find({ status: 'idle' }).then(drivers => {
-		const nearestDriver = getNearestDriver(order, drivers);
+		const nearestDriver = getNearestDriverForOrder(order, drivers);
 		return nearestDriver;
 	});
 };
 
 const getNearestDriverForOrder = (order, drivers) => {
-	var neaestDriver;
+	var nearestDriver;
 	var minDistance;
 	drivers.forEach(driver => {
 		const driverDistanceFromStore = util.calculateDistanceBetweenAddresses(

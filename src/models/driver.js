@@ -38,7 +38,7 @@ const DriverSchema = new mongoose.Schema({
 	status: {
 		type: String,
 		enum: ['deactivated', 'idle', 'working'],
-		default: false
+		default: 'idle'
 	},
 	current_location: {
 		lat: Number,
