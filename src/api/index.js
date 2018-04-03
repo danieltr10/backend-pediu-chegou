@@ -106,6 +106,24 @@ export default ({ config, db }) => {
 			.then(() => res.json(newDriver))
 			.catch(err => console.log(err));
 	});
+	// Update Driver By Id
+	api.put('/driver/:id', (req, res) => {
+		var id = req.params.id;
+		return Driver.findOne({ _id: id }).then(driver => {
+			driver.name = req.body.name;
+			driver.lastName = req.body.lastName;
+			driver.ddd = req.body.ddd;
+			driver.phone = req.body.phone;
+			driver.email = req.body.email;
+			driver.cpf = req.body.cpf;
+			driver.company = req.body.company;
+			driver.password_hash = req.body.password_hash;
+			driver.status = req.body.status;
+			driver.current_location = req.body.current_location;
+			driver.push_token = req.body.push_token;
+			return driver.save().then(driver => res.json(driver));
+		});
+	});
 
 	// Get Driver By Id
 	api.get('/driver/:id', (req, res) => {
@@ -113,7 +131,7 @@ export default ({ config, db }) => {
 		return Driver.findOne({ _id: id }).then(driver => res.json(driver));
 	});
 
-	// Get All Driver
+	// Get All Drivers
 	api.get('/driver/', (req, res) => {
 		return Driver.find({}).then(driver => res.json(driver));
 	});
