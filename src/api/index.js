@@ -87,8 +87,7 @@ export default ({ config, db }) => {
 
 	// Create driver
 	api.post('/driver/createDriver', (req, res) => {
-		const { name, lastName, ddd, phone, email, cpf, company, password_hash, status, current_location, push_token} = req.body;
-
+		const {name, lastName, ddd, phone, email, cpf, company, password_hash, status, current_location, push_token} = req.body;
 		const newDriver = new Driver({
 			name,
 			lastName,
@@ -102,18 +101,21 @@ export default ({ config, db }) => {
 			current_location,
 			push_token
 		});
-		return newDriver.save().then(() => res.json(newDriver));
+		return newDriver
+			.save()
+			.then(() => res.json(newDriver))
+			.catch(err => console.log(err));
 	});
 
 	// Get Driver By Id
 	api.get('/driver/:id', (req, res) => {
 		var id = req.params.id;
-		return Driver.findOne({ _id: id }).then(driver => res.json(user));
+		return Driver.findOne({ _id: id }).then(driver => res.json(driver));
 	});
 
 	// Get All Driver
 	api.get('/driver/', (req, res) => {
-		return Driver.find({}).then(driver => res.json(user));
+		return Driver.find({}).then(driver => res.json(driver));
 	});
 
 	// Payment
