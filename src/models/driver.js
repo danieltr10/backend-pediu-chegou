@@ -46,8 +46,7 @@ const DriverSchema = new mongoose.Schema({
 		updated_at: { type: Date, default: new Date() }
 	},
 	push_token: {
-		type: String,
-		required: true
+		type: String
 	}
 });
 
