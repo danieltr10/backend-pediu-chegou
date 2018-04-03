@@ -4,6 +4,28 @@ import Driver from '../models/driver';
 import util from '../lib/util';
 import Expo from 'expo-server-sdk';
 
+export const acceptOrder = (req, res) => {
+	const { driver_id, order_id } = req.body;
+
+	if (!driver_id || !order_id) {
+		return res.json({ error: 'Não foi possível aceitar o pedido!' });
+	}
+
+	return Order.update(
+		{ _id: order_id },
+		{ $set: { status: 'in_transit', driver_id } },
+		() => {
+			return Driver.update(
+				{ _id: driver_id },
+				{ $set: { status: 'working' } },
+				() => {
+					return res.json({ message: 'Pedido aceito com sucesso!' });
+				}
+			);
+		}
+	).catch(err => console.log(err));
+};
+
 export const createOrder = (req, res) => {
 	const {
 		client_id,

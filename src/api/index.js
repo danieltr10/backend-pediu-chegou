@@ -6,7 +6,7 @@ import User from '../models/user';
 import Payment from '../models/payment';
 import Driver from '../models/driver';
 
-import { createOrder } from '../controllers/orders';
+import { createOrder, acceptOrder } from '../controllers/orders';
 
 export default ({ config, db }) => {
 	let api = Router();
@@ -27,6 +27,8 @@ export default ({ config, db }) => {
 	// Order Region
 
 	api.post('/order/createOrder', (req, res) => createOrder(req, res));
+
+	api.post('/order/acceptOrder', (req, res) => acceptOrder(req, res));
 
 	// User
 
@@ -87,7 +89,19 @@ export default ({ config, db }) => {
 
 	// Create driver
 	api.post('/driver/createDriver', (req, res) => {
-		const { name, lastName, ddd, phone, email, cpf, company, password_hash, status, current_location, push_token} = req.body;
+		const {
+			name,
+			lastName,
+			ddd,
+			phone,
+			email,
+			cpf,
+			company,
+			password_hash,
+			status,
+			current_location,
+			push_token
+		} = req.body;
 
 		const newDriver = new Driver({
 			name,
