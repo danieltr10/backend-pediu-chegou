@@ -43,8 +43,7 @@ export default ({ config, db }) => {
 			phone,
 			push_token,
 			password_hash
-		} = req.body;
-
+		} = req.body.requestData;
 		const newUser = new User({
 			name,
 			email,

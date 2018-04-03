@@ -32,8 +32,7 @@ const UserSchema = new mongoose.Schema({
 		required: true
 	},
 	push_token: {
-		type: String,
-		required: true
+		type: String
 	}
 });
 
