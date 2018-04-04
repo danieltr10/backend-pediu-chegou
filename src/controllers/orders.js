@@ -75,7 +75,7 @@ const getNearestDriverForOrder = (order, drivers) => {
 	var nearestDriver;
 	var minDistance;
 	drivers.forEach(driver => {
-		const driverDistanceFromStore = util.calculateDistanceBetweenAddresses(
+		const driverDistanceFromStore = calculateDistanceBetweenAddresses(
 			order.store_address,
 			driver.current_location
 		);
