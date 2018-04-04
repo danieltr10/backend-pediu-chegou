@@ -1,7 +1,7 @@
 import Order from '../models/order';
 import User from '../models/user';
 import Driver from '../models/driver';
-import util from '../lib/util';
+import { calculateDistanceBetweenAddresses } from '../lib/util';
 import Expo from 'expo-server-sdk';
 
 export const acceptOrder = (req, res) => {
