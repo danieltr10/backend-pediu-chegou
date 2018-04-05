@@ -1,5 +1,6 @@
 import { version } from '../../package.json';
 import { Router } from 'express';
+import jwt from 'jsonwebtoken';
 
 import Order from '../models/order';
 import User from '../models/user';
@@ -19,9 +20,14 @@ export default ({ config, db }) => {
 	// User region
 
 	api.post('/user/login', (req, res) => {
+		console.log('aqui');
 		const { email, password } = req.body;
 
-		return User.findOne({ email }).then(user => res.json(user));
+		return User.findOne({ email }).then(user => {
+			jwt.sign(user, 'secret', (err, token) => {
+				return res.json({ user, token });
+			});
+		});
 	});
 
 	// Order Region
@@ -88,8 +94,19 @@ export default ({ config, db }) => {
 
 	// Create driver
 	api.post('/driver/createDriver', (req, res) => {
-
-		const {name, lastName, ddd, phone, email, cpf, company, password_hash, status, current_location, push_token} = req.body;
+		const {
+			name,
+			lastName,
+			ddd,
+			phone,
+			email,
+			cpf,
+			company,
+			password_hash,
+			status,
+			current_location,
+			push_token
+		} = req.body;
 		const newDriver = new Driver({
 			name,
 			lastName,
