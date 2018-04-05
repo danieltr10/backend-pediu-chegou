@@ -12,6 +12,32 @@ import { createOrder, acceptOrder } from '../controllers/orders';
 export default ({ config, db }) => {
 	let api = Router();
 
+	const verifyToken = (req, res, next) => {
+		const path = req.route.path;
+		if (path === '/user/login' || path === '/user/createUser') {
+			return next();
+		}
+
+		const bearerHeader = req.headers['authorization'];
+
+		if (bearerHeader && bearerHeader.length > 0) {
+			const bearer = bearerHeader.split(' ');
+			const token = bearer[1];
+			req.token = token;
+
+			jwt.verify(token, 'secret', (err, authData) => {
+				if (err) {
+					return res.status(403).json({ error: 'Sem credenciais' });
+				} else {
+					return next();
+				}
+			});
+			return next();
+		} else {
+			return res.status(403).json({ error: 'Sem credenciais' });
+		}
+	};
+
 	// perhaps expose some API metadata at the root
 	api.get('/', (req, res) => {
 		return res.json({ version });
@@ -20,19 +46,22 @@ export default ({ config, db }) => {
 	// User region
 
 	api.post('/user/login', (req, res) => {
-		console.log('aqui');
 		const { email, password } = req.body;
 
 		return User.findOne({ email }).then(user => {
-			jwt.sign(user, 'secret', (err, token) => {
-				return res.json({ user, token });
+			const sanitizedUser = { ...user.toJSON() };
+			delete sanitizedUser.password_hash;
+			jwt.sign(sanitizedUser, 'secret', (err, token) => {
+				return res.json({ user: sanitizedUser, token });
 			});
 		});
 	});
 
 	// Order Region
 
-	api.post('/order/createOrder', (req, res) => createOrder(req, res));
+	api.post('/order/createOrder', verifyToken, (req, res) =>
+		createOrder(req, res)
+	);
 
 	api.post('/order/acceptOrder', (req, res) => acceptOrder(req, res));
 
@@ -49,7 +78,7 @@ export default ({ config, db }) => {
 			phone,
 			push_token,
 			password_hash
-		} = req.body.requestData;
+		} = req.body;
 		const newUser = new User({
 			name,
 			email,
@@ -60,7 +89,13 @@ export default ({ config, db }) => {
 			cpf,
 			password_hash
 		});
-		return newUser.save().then(() => res.json(newUser));
+		return newUser.save().then(user => {
+			const sanitizedUser = { ...user.toJSON() };
+			delete sanitizedUser.password_hash;
+			jwt.sign(sanitizedUser, 'secret', (err, token) => {
+				return res.json({ user: sanitizedUser, token });
+			});
+		});
 	});
 
 	//Update User By Id
@@ -160,8 +195,6 @@ export default ({ config, db }) => {
 	//Create Payment
 	api.post('/payment/createPayment', (req, res) => {
 		const { client_id, number, cvc, name, expiry, type } = req.body;
-
-		console.log('teste');
 		const newPayment = new Payment({
 			client_id,
 			number,
