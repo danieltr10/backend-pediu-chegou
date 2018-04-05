@@ -12,32 +12,6 @@ import { createOrder, acceptOrder } from '../controllers/orders';
 export default ({ config, db }) => {
 	let api = Router();
 
-	const verifyToken = (req, res, next) => {
-		const path = req.route.path;
-		if (path === '/user/login' || path === '/user/createUser') {
-			return next();
-		}
-
-		const bearerHeader = req.headers['authorization'];
-
-		if (bearerHeader && bearerHeader.length > 0) {
-			const bearer = bearerHeader.split(' ');
-			const token = bearer[1];
-			req.token = token;
-
-			jwt.verify(token, 'secret', (err, authData) => {
-				if (err) {
-					return res.status(403).json({ error: 'Sem credenciais' });
-				} else {
-					return next();
-				}
-			});
-			return next();
-		} else {
-			return res.status(403).json({ error: 'Sem credenciais' });
-		}
-	};
-
 	// perhaps expose some API metadata at the root
 	api.get('/', (req, res) => {
 		return res.json({ version });
@@ -59,9 +33,7 @@ export default ({ config, db }) => {
 
 	// Order Region
 
-	api.post('/order/createOrder', verifyToken, (req, res) =>
-		createOrder(req, res)
-	);
+	api.post('/order/createOrder', (req, res) => createOrder(req, res));
 
 	api.post('/order/acceptOrder', (req, res) => acceptOrder(req, res));
 
