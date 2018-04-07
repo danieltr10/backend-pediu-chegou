@@ -65,7 +65,6 @@ const verifyToken = (req, res, next) => {
 				return next();
 			}
 		});
-		return next();
 	} else {
 		return res.status(403).json({ error: 'Sem credenciais' });
 	}
