@@ -10,7 +10,8 @@ import Driver from '../models/driver';
 import {
 	createOrder,
 	acceptOrder,
-	getAllOrderFromUser
+	getAllOrderFromUser,
+	getPendingOrders
 } from '../controllers/orders';
 
 export default ({ config, db }) => {
@@ -42,6 +43,8 @@ export default ({ config, db }) => {
 	api.post('/order/', (req, res) => getAllOrderFromUser(req, res));
 
 	api.post('/order/acceptOrder', (req, res) => acceptOrder(req, res));
+
+	api.post('/order/pendingOrders', (req, res) => getPendingOrders(req, res));
 
 	// User
 

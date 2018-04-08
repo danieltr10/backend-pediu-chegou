@@ -71,6 +71,15 @@ export const getAllOrderFromUser = (req, res) => {
 	});
 };
 
+export const getPendingOrders = (req, res) => {
+	var driver_id = req.body._id;
+	return Order.find({ driver_id: driver_id, status: 'in_transit' }).then(
+		order => {
+			res.json(order);
+		}
+	);
+};
+
 // Const aux methods
 
 const findDriverForOrder = order => {
