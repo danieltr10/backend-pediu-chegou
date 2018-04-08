@@ -50,14 +50,12 @@ const verifyToken = (req, res, next) => {
 	if (path === '/api/user/login' || path === '/api/user/createUser') {
 		return next();
 	}
-
 	const bearerHeader = req.headers['authorization'];
 
 	if (bearerHeader && bearerHeader.length > 0) {
 		const bearer = bearerHeader.split(' ');
 		const token = bearer[1];
 		req.token = token;
-
 		jwt.verify(token, 'secret', (err, authData) => {
 			if (err) {
 				return res.status(403).json({ error: 'Sem credenciais' });

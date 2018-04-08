@@ -62,6 +62,15 @@ export const createOrder = (req, res) => {
 		.catch(err => console.log(err));
 };
 
+export const getAllOrderFromUser = (req, res) => {
+	var client_id = req.body._id;
+	console.log(client_id);
+	return Order.find({ client_id }).then(order => {
+		console.log(order);
+		res.json(order);
+	});
+};
+
 // Const aux methods
 
 const findDriverForOrder = order => {
