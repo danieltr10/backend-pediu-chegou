@@ -49,7 +49,10 @@ const verifyToken = (req, res, next) => {
 	if (
 		path === '/api/driver/createDriver' ||
 		path === '/api/user/login' ||
-		path === '/api/user/createUser'
+		path === '/api/user/createUser' ||
+		path === 'driver/createDriver' ||
+		path === 'user/login' ||
+		path === 'user/createUser'
 	) {
 		return next();
 	}
