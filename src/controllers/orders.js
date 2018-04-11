@@ -64,7 +64,7 @@ export const createOrder = (req, res) => {
 };
 
 export const getAllOrderFromUser = (req, res) => {
-	var client_id = req.body._id;
+	var client_id = req.user._id;
 	return Order.find({ client_id }).then(order => {
 		res.json(order);
 	});
