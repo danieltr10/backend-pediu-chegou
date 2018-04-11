@@ -7,7 +7,12 @@ import User from '../models/user';
 import Payment from '../models/payment';
 import Driver from '../models/driver';
 
-import { createOrder, acceptOrder } from '../controllers/orders';
+import {
+	createOrder,
+	acceptOrder,
+	getAllOrderFromUser,
+	pendingOrders
+} from '../controllers/orders';
 
 export default ({ config, db }) => {
 	let api = Router();
@@ -21,21 +26,40 @@ export default ({ config, db }) => {
 
 	api.post('/user/login', (req, res) => {
 		const { email, password } = req.body;
-
-		return User.findOne({ email }).then(user => {
-			const sanitizedUser = { ...user.toJSON() };
-			delete sanitizedUser.password_hash;
-			jwt.sign(sanitizedUser, 'secret', (err, token) => {
-				return res.json({ user: sanitizedUser, token });
-			});
-		});
+		console.log('login');
+		User.findOne({ email })
+			.then(user => {
+				if (user) {
+					const sanitizedUser = { ...user.toJSON() };
+					delete sanitizedUser.password_hash;
+					jwt.sign(sanitizedUser, 'secret', (err, token) => {
+						return res.json({ user: sanitizedUser, token });
+					});
+				}
+			})
+			.catch(err => console.log(err));
+		Driver.findOne({ email })
+			.then(driver => {
+				if (driver) {
+					const sanitizedDriver = { ...driver.toJSON() };
+					delete sanitizedDriver.password_hash;
+					jwt.sign(sanitizedDriver, 'secret', (err, token) => {
+						return res.json({ user: sanitizedDriver, token });
+					});
+				}
+			})
+			.catch(err => console.log(err));
 	});
 
 	// Order Region
 
 	api.post('/order/createOrder', (req, res) => createOrder(req, res));
 
+	api.post('/order/', (req, res) => getAllOrderFromUser(req, res));
+
 	api.post('/order/acceptOrder', (req, res) => acceptOrder(req, res));
+
+	api.post('/order/pendingOrders', (req, res) => pendingOrders(req, res));
 
 	// User
 
@@ -71,9 +95,9 @@ export default ({ config, db }) => {
 	});
 
 	//Update User By Id
-	api.put('/user/:id', (req, res) => {
-		var id = req.params.id;
-		return User.findOne({ _id: id }).then(user => {
+	api.put('/user/', (req, res) => {
+		var email = req.body.email;
+		return User.findOne({ email }).then(user => {
 			user.name = req.body.name;
 			user.email = req.body.email;
 			user.lastName = req.body.lastName;
@@ -81,8 +105,18 @@ export default ({ config, db }) => {
 			user.phone = req.body.phone;
 			user.push_token = req.body.push_token;
 			user.cpf = req.body.cpf;
-			user.password_hash = req.body.password_hash;
-			return user.save().then(user => res.json(user));
+			if (req.body.password_hash != null) {
+				user.password_hash = req.body.password_hash;
+			}
+			return user.save().then(user => {
+				const sanitizedUser = { ...user.toJSON() };
+				delete sanitizedUser.password_hash;
+				console.log(sanitizedUser);
+				jwt.sign(sanitizedUser, 'secret', (err, token) => {
+					console.log(token);
+					return res.json({ user: sanitizedUser, token });
+				});
+			});
 		});
 	});
 
