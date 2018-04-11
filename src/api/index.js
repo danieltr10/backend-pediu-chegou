@@ -11,7 +11,7 @@ import {
 	createOrder,
 	acceptOrder,
 	getAllOrderFromUser,
-	getPendingOrders
+	pendingOrders
 } from '../controllers/orders';
 
 export default ({ config, db }) => {
@@ -26,14 +26,29 @@ export default ({ config, db }) => {
 
 	api.post('/user/login', (req, res) => {
 		const { email, password } = req.body;
-
-		return User.findOne({ email }).then(user => {
-			const sanitizedUser = { ...user.toJSON() };
-			delete sanitizedUser.password_hash;
-			jwt.sign(sanitizedUser, 'secret', (err, token) => {
-				return res.json({ user: sanitizedUser, token });
-			});
-		});
+		console.log('login');
+		User.findOne({ email })
+			.then(user => {
+				if (user) {
+					const sanitizedUser = { ...user.toJSON() };
+					delete sanitizedUser.password_hash;
+					jwt.sign(sanitizedUser, 'secret', (err, token) => {
+						return res.json({ user: sanitizedUser, token });
+					});
+				}
+			})
+			.catch(err => console.log(err));
+		Driver.findOne({ email })
+			.then(driver => {
+				if (driver) {
+					const sanitizedDriver = { ...driver.toJSON() };
+					delete sanitizedDriver.password_hash;
+					jwt.sign(sanitizedDriver, 'secret', (err, token) => {
+						return res.json({ user: sanitizedDriver, token });
+					});
+				}
+			})
+			.catch(err => console.log(err));
 	});
 
 	// Order Region
@@ -44,7 +59,7 @@ export default ({ config, db }) => {
 
 	api.post('/order/acceptOrder', (req, res) => acceptOrder(req, res));
 
-	api.post('/order/pendingOrders', (req, res) => getPendingOrders(req, res));
+	api.post('/order/pendingOrders', (req, res) => pendingOrders(req, res));
 
 	// User
 
