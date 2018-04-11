@@ -26,7 +26,7 @@ export default ({ config, db }) => {
 
 	api.post('/user/login', (req, res) => {
 		const { email, password } = req.body;
-		return User.findOne({ email })
+		return User.findOne({ email, password_hash: password })
 			.then(user => {
 				if (user) {
 					const sanitizedUser = { ...user.toJSON() };
@@ -35,7 +35,7 @@ export default ({ config, db }) => {
 						return res.json({ user: sanitizedUser, token });
 					});
 				} else {
-					return Driver.findOne({ email })
+					return Driver.findOne({ email, password_hash: password })
 						.then(driver => {
 							if (driver) {
 								const sanitizedDriver = { ...driver.toJSON() };
