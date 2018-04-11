@@ -111,9 +111,7 @@ export default ({ config, db }) => {
 			return user.save().then(user => {
 				const sanitizedUser = { ...user.toJSON() };
 				delete sanitizedUser.password_hash;
-				console.log(sanitizedUser);
 				jwt.sign(sanitizedUser, 'secret', (err, token) => {
-					console.log(token);
 					return res.json({ user: sanitizedUser, token });
 				});
 			});

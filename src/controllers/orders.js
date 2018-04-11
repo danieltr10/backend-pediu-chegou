@@ -5,7 +5,8 @@ import { calculateDistanceBetweenAddresses } from '../lib/util';
 import Expo from 'expo-server-sdk';
 
 export const acceptOrder = (req, res) => {
-	const { driver_id, order_id } = req.body.requestData;
+	const driver_id = req.user._id;
+	const { order_id } = req.body;
 
 	if (!driver_id || !order_id) {
 		return res.json({ error: 'Não foi possível aceitar o pedido!' });
@@ -64,9 +65,7 @@ export const createOrder = (req, res) => {
 
 export const getAllOrderFromUser = (req, res) => {
 	var client_id = req.body._id;
-	console.log(client_id);
 	return Order.find({ client_id }).then(order => {
-		console.log(order);
 		res.json(order);
 	});
 };

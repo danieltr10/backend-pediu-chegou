@@ -45,7 +45,6 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const verifyToken = (req, res, next) => {
-	console.log(req.url);
 	const path = req.url;
 	if (
 		path === '/api/driver/createDriver' ||
@@ -66,6 +65,7 @@ const verifyToken = (req, res, next) => {
 			if (err) {
 				return res.status(403).json({ error: 'Sem credenciais' });
 			} else {
+				req.user = authData;
 				return next();
 			}
 		});
