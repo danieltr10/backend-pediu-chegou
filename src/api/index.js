@@ -216,5 +216,11 @@ export default ({ config, db }) => {
 			.catch(err => console.log(err));
 	});
 
+	api.post('/crash-the-server', (req, res) => {
+		process.nextTick(function() {
+			throw new Error();
+		});
+	});
+
 	return api;
 };
