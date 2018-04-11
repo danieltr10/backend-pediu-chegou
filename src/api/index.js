@@ -26,8 +26,7 @@ export default ({ config, db }) => {
 
 	api.post('/user/login', (req, res) => {
 		const { email, password } = req.body;
-		console.log('login');
-		User.findOne({ email })
+		return User.findOne({ email })
 			.then(user => {
 				if (user) {
 					const sanitizedUser = { ...user.toJSON() };
@@ -35,17 +34,18 @@ export default ({ config, db }) => {
 					jwt.sign(sanitizedUser, 'secret', (err, token) => {
 						return res.json({ user: sanitizedUser, token });
 					});
-				}
-			})
-			.catch(err => console.log(err));
-		Driver.findOne({ email })
-			.then(driver => {
-				if (driver) {
-					const sanitizedDriver = { ...driver.toJSON() };
-					delete sanitizedDriver.password_hash;
-					jwt.sign(sanitizedDriver, 'secret', (err, token) => {
-						return res.json({ user: sanitizedDriver, token });
-					});
+				} else {
+					return Driver.findOne({ email })
+						.then(driver => {
+							if (driver) {
+								const sanitizedDriver = { ...driver.toJSON() };
+								delete sanitizedDriver.password_hash;
+								jwt.sign(sanitizedDriver, 'secret', (err, token) => {
+									return res.json({ user: sanitizedDriver, token });
+								});
+							}
+						})
+						.catch(err => console.log(err));
 				}
 			})
 			.catch(err => console.log(err));
@@ -161,10 +161,13 @@ export default ({ config, db }) => {
 			current_location,
 			push_token
 		});
-		return newDriver
-			.save()
-			.then(() => res.json(newDriver))
-			.catch(err => console.log(err));
+		return newDriver.save().then(user => {
+			const sanitizedUser = { ...user.toJSON() };
+			delete sanitizedUser.password_hash;
+			jwt.sign(sanitizedUser, 'secret', (err, token) => {
+				return res.json({ user: sanitizedUser, token });
+			});
+		});
 	});
 	// Update Driver By Id
 	api.put('/driver/:id', (req, res) => {
