@@ -226,7 +226,7 @@ export default ({ config, db }) => {
 
 	api.post('/crash-the-server', (req, res) => {
 		process.nextTick(function() {
-			throw new Error();
+			throw new Error('Rota de crash');
 		});
 	});
 
