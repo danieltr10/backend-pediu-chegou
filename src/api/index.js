@@ -168,9 +168,9 @@ export default ({ config, db }) => {
 		});
 	});
 	// Update Driver By Id
-	api.put('/driver/:id', (req, res) => {
-		var id = req.params.id;
-		return Driver.findOne({ _id: id }).then(driver => {
+	api.put('/driver/', (req, res) => {
+		var email = req.body.email;
+		return Driver.findOne({ email }).then(driver => {
 			driver.name = req.body.name;
 			driver.lastName = req.body.lastName;
 			driver.ddd = req.body.ddd;
@@ -178,11 +178,19 @@ export default ({ config, db }) => {
 			driver.email = req.body.email;
 			driver.cpf = req.body.cpf;
 			driver.company = req.body.company;
-			driver.password_hash = req.body.password_hash;
 			driver.status = req.body.status;
 			driver.current_location = req.body.current_location;
-			driver.push_token = req.body.push_token;
-			return driver.save().then(driver => res.json(driver));
+
+			if (req.body.password_hash != null) {
+				driver.password_hash = req.body.password_hash;
+			}
+			return driver.save().then(driver => {
+				const sanitizedDriver = { ...driver.toJSON() };
+				delete sanitizedDriver.password_hash;
+				jwt.sign(sanitizedDriver, 'secret', (err, token) => {
+					return res.json({ driver: sanitizedDriver, token });
+				});
+			});
 		});
 	});
 
