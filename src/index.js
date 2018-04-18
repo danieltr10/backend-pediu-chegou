@@ -66,14 +66,14 @@ const verifyToken = (req, res, next) => {
 
 		jwt.verify(token, 'secret', (err, authData) => {
 			if (err) {
-				return res.status(403).json({ error: 'Sem credenciais' });
+				return res.status(401).json({ error: 'Sem credenciais' });
 			} else {
 				req.user = authData;
 				return next();
 			}
 		});
 	} else {
-		return res.status(403).json({ error: 'Sem credenciais' });
+		return res.status(401).json({ error: 'Sem credenciais' });
 	}
 };
 
